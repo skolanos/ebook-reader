@@ -1,0 +1,118 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+/*div {
+    border: 1px solid blue;
+}*/
+div.top-bar {
+    position: absolute;
+    height: 100px;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+}
+div.bottom-bar {
+    position: absolute;
+    height: 100px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+div.main-content {
+    position: absolute;
+    top: 100px;
+    bottom: 100px;
+    left: 0px;
+    right: 0px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border: 1px solid gray;
+}
+div.library-item {
+    float: left;
+    min-width: 150px;
+    min-height: 230px;
+    max-width: 150px;
+    /*max-height: 230px;*/
+    margin: 10px;
+}
+div.library-item div.cover {
+    text-align: center;
+}
+div.library-item div.cover img {
+    max-height: 150px;
+}
+div.library-item div.author {
+    color: #000000;
+    font-size: 14px;
+    font-family: sans-serif;
+    font-weight: normal;
+}
+div.library-item div.title {
+    color: #000000;
+    font-size: 14px;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+div.library-item a {
+    text-decoration: none;
+}
+article.book-content {
+    font-family: Times;
+    color: red; /*DEBUG: widoczne elementy dla których nie zdefiniowano stylu*/
+    padding: 0 5%;
+    text-align: justify;
+    text-justify: auto;
+}
+
+article.book-content h1 {
+    color: black;
+    display: block;
+    font-size: 2em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+
+article.book-content h2 {
+    color: black;
+    display: block;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+
+article.book-content h3 {
+    color: black;
+    display: block;
+    font-size: 1.17em;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+
+article.book-content p {
+    color: black;
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+article.book-content pre {
+    color: black;
+    display: block;
+    font-family: monospace;
+    white-space-collapse: preserve;
+    text-wrap: nowrap;
+    margin: 1em 0px;
+}

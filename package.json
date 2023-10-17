@@ -1,0 +1,23 @@
+{
+  "name": "ebook-reader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "lint": "eslint -c .eslintrc.json --ext .js ./src"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@electron-internal/eslint-config": "^1.0.1",
+    "electron": "^26.2.1",
+    "eslint": "^8.50.0",
+    "eslint-plugin-node": "^11.1.0"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.10",
+    "uuid": "^9.0.1",
+    "xml2js": "^0.6.2"
+  }
+}
