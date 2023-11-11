@@ -6,6 +6,7 @@ const AdmZip = require('adm-zip');
 
 const logger = require('./logger');
 const fileUtils = require('./file-utils');
+const cbzUtils = require('./cbz-utils');
 
 /**
  *
@@ -103,7 +104,8 @@ const prepareBooksTitles = async (options, paths) => {
 
 	const entries = [];
 	for (const filePath of paths) {
-		if (/\.epub$/i.test(filePath)) {
+		const ext = path.parse(filePath).ext.toLowerCase();
+		if (ext === '.epub') {
 			// plik w formacie EPUB
 
 			// wyczyszczenie zawartości katalogu przechowującego rozkompresowane pliki z książki
@@ -122,6 +124,23 @@ const prepareBooksTitles = async (options, paths) => {
 			fileUtils.compareFilePathToMainDir(coverFilePathSrc, options.unzip_dir);
 			fileUtils.compareFilePathToMainDir(coverFilePath, options.covers_dir);
 			await fs.promises.copyFile(coverFilePathSrc, coverFilePath);
+
+			entries.push({
+				uid: entry.uid,
+				file_path: entry.file_path,
+				mimetype: entry.mimetype,
+				title: entry.title,
+				creator: entry.creator,
+				cover_file_path: coverFilePath,
+				toc: entry.toc,
+				current_page_idx: 0
+			});
+		} else if (ext === '.cbz' || ext === '.zip') {
+			// założenie że pliki z rozszeżeniem zip są plikami w formacie "Comic Book ZIP Archive File"
+
+			const entry = await cbzUtils.getCbzInfo(options, filePath, options.unzip_dir);
+
+			const coverFilePath = path.join(entry.cover_root_dir_src, entry.cover);
 
 			entries.push({
 				uid: entry.uid,

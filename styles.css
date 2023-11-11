@@ -65,6 +65,10 @@ article.book-content {
     text-align: justify;
     text-justify: auto;
 }
+img.img-content {
+    max-width: 100%;
+    height: auto;
+}
 
 article.book-content h1 {
     color: black;

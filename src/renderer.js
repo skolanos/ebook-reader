@@ -1,4 +1,7 @@
 const appState = {
+	libraryMenuClick: false,
+	bookMenuClick: false,
+	libraryPath: undefined,
 	librarySelected: false,
 	bookSelected: false,
 	currentPage: 0,
@@ -8,10 +11,24 @@ const appState = {
 document.addEventListener('DOMContentLoaded', () => {
 	setUiState();
 
+	document.querySelector('#library-menu-item').addEventListener('click', () => {
+		appState.libraryMenuClick = true;
+		appState.bookMenuClick = false;
+		setUiState();
+
+		// TODO: jeżeli !appState.libraryPath to nie został wybrany katalog i można przejść bezpośrednio do wybrania katalogu
+		// TODO: jeżeli katalog jest wybrany to można pobrać zawartość z tego katalogu
+	});
+	document.querySelector('#book-menu-item').addEventListener('click', () => {
+		appState.libraryMenuClick = false;
+		appState.bookMenuClick = true;
+		setUiState();
+	});
 	document.querySelector('#directory-selector').addEventListener('click', async () => {
 		const res = await window.electronApi.selectDirectory();
 		if (!res.path.canceled) {
 			appState.librarySelected = true;
+			appState.libraryPath = res.path.filePaths[0];
 			setUiState();
 			document.querySelector('.main-content').innerHTML = res.content;
 			// podłączenie zdarzenia onClick na kliknięcie na okładkę książki
@@ -56,12 +73,19 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const setUiState = () => {
-	document.querySelector('#prev-page').style.display = 'none';
-	document.querySelector('#next-page').style.display = 'none';
+	console.log('setUiState', appState); // DEBUG: >>>>>>>>>>>>>>>
+	document.querySelector('#library-panel').style.display = 'none';
+	document.querySelector('#book-panel').style.display = 'none';
+	document.querySelector('#book-menu-item').disabled = true;
 
 	if (appState.bookSelected) {
-		document.querySelector('#prev-page').style.display = 'inline';
-		document.querySelector('#next-page').style.display = 'inline';
+		document.querySelector('#book-menu-item').disabled = false;
+	}
+	if (appState.libraryMenuClick) {
+		document.querySelector('#library-panel').style.display = 'inline';
+	}
+	if (appState.bookMenuClick && appState.bookSelected) {
+		document.querySelector('#book-panel').style.display = 'inline';
 		document.querySelector('#prev-page').disabled = (appState.currentPage <= 1);
 		document.querySelector('#next-page').disabled = (appState.currentPage >= appState.totalPages);
 	}
@@ -81,6 +105,9 @@ const showReadingProgress = (response) => {
 };
 
 const libraryBookClick = async (bookUid) => {
+	appState.libraryMenuClick = false;
+	appState.bookMenuClick = true;
+
 	appState.bookSelected = true;
 	const res = await window.electronApi.prepareBookToRead(bookUid);
 	document.querySelector('.main-content').innerHTML = res.content;

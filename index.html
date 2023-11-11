@@ -12,15 +12,20 @@
     </head>
     <body>
         <div class="top-bar">
-            <button id="directory-selector">Wybierz bibliotekę</button>
+            <button id="library-menu-item">Biblioteka</button>
+            <button id="book-menu-item">Książka</button>
         </div>
         <div class="main-content">
-
         </div>
         <div class="bottom-bar">
-            <button id="prev-page">Poprzednia strona</button>
-            <button id="next-page">Następna strona</button>
-            <div id="book-progress"></div>
+            <div id="library-panel">
+                <button id="directory-selector">Wybierz katalog</button>
+            </div>
+            <div id="book-panel">
+                <button id="prev-page">Poprzednia strona</button>
+                <button id="next-page">Następna strona</button>
+                <div id="book-progress"></div>
+            </div>
         </div>
 
         <script src="./src/renderer.js"></script>

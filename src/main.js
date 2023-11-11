@@ -6,6 +6,7 @@ const path = require('node:path');
 const logger = require('./utils/logger');
 const fileUtils = require('./utils/file-utils');
 const epubUtils = require('./utils/epub-utils');
+const cbzUtils = require('./utils/cbz-utils');
 
 /**
  * @typedef {Object} AppPreferences
@@ -27,6 +28,12 @@ let currentBookEntry = null;
 /** @type {AppPreferences} */
 const appPreferences = {
 	tmpDirPrefix: '.ebook_reader.'
+};
+const appState = {
+	library: {
+		path: undefined,
+		booksEntries: undefined
+	}
 };
 
 const setup = async (/** @type {AppPreferences} */ appPrefs) => {
@@ -124,6 +131,9 @@ ipcMain.handle('select-directory', async () => {
 		booksEntries = await epubUtils.prepareBooksTitles(appOptions, files);
 		// logger.debug('select-directory: booksEntries=[' + JSON.stringify(booksEntries) + ']'); // DEBUG:
 		libraryPageHtml = epubUtils.prepareLibraryPageHtml(appOptions, booksEntries);
+
+		appState.library.path = result.filePaths[0];
+		appState.library.booksEntries = booksEntries;
 	}
 
 	return {
@@ -138,7 +148,11 @@ ipcMain.handle('prepare-book-to-read', async (event, bookUid) => {
 	let html = '';
 	if (bookEntry) {
 		currentBookEntry = bookEntry;
-		html = await epubUtils.prepareBookToRead(appOptions, currentBookEntry);
+		if (currentBookEntry.mimetype === 'application/epub+zip') {
+			html = await epubUtils.prepareBookToRead(appOptions, currentBookEntry);
+		} else if (currentBookEntry.mimetype === 'application/cbz') {
+			html = await cbzUtils.prepareBookToRead(appOptions, currentBookEntry);
+		}
 		// logger.debug('prepare-book-to-read: html=[' + html + ']');
 	}
 
@@ -154,7 +168,11 @@ ipcMain.handle('get-book-prev-page', async () => {
 	if (currentBookEntry) {
 		if (currentBookEntry.current_page_idx > 0) {
 			currentBookEntry.current_page_idx--;
-			html = await epubUtils.getEpubPageContent(appOptions, currentBookEntry);
+			if (currentBookEntry.mimetype === 'application/epub+zip') {
+				html = await epubUtils.getEpubPageContent(appOptions, currentBookEntry);
+			} else if (currentBookEntry.mimetype === 'application/cbz') {
+				html = cbzUtils.getCbzPageContent(appOptions, currentBookEntry);
+			}
 			return {
 				currentPage: currentBookEntry.current_page_idx + 1,
 				totalPages: currentBookEntry.toc.length,
@@ -171,7 +189,11 @@ ipcMain.handle('get-book-next-page', async () => {
 	if (currentBookEntry) {
 		if (currentBookEntry.current_page_idx < currentBookEntry.toc.length - 1) {
 			currentBookEntry.current_page_idx++;
-			html = await epubUtils.getEpubPageContent(appOptions, currentBookEntry);
+			if (currentBookEntry.mimetype === 'application/epub+zip') {
+				html = await epubUtils.getEpubPageContent(appOptions, currentBookEntry);
+			} else if (currentBookEntry.mimetype === 'application/cbz') {
+				html = cbzUtils.getCbzPageContent(appOptions, currentBookEntry);
+			}
 			return {
 				currentPage: currentBookEntry.current_page_idx + 1,
 				totalPages: currentBookEntry.toc.length,
